@@ -1,0 +1,110 @@
+<html>
+
+<head>
+
+<style>
+
+canvas
+{
+	cursor:none;
+}
+
+</style>
+
+<body>
+<canvas id= "CanvasTest" width="1335" height="674" style="border:5px solid #000000;">
+
+
+
+</canvas>
+</body>
+
+<script>
+
+function myCanvas() {
+    var c = document.getElementById("CanvasTest");
+    var ctx = c.getContext("2d");
+    var img = document.getElementById("BMW M6.jpg");
+    ctx.drawImage(img,1000,1000);
+}
+var ct = document.getElementById("CanvasTest");
+var cttext= ct.getContext("2d");
+	  
+var vx=300,vy=100,hx=200,hy=200;
+var x=300,y=200;
+//var d=100;
+
+var isClicked=false;
+var width=ct.width;
+var height=ct.height;
+
+tick();
+
+document.addEventListener("mousedown",handleMouseDown);
+document.addEventListener("mouseup",handleMouseUp);
+document.addEventListener("mousemove",handleMouseMove);
+
+function tick()
+{
+	cttext.clearRect(0,0,width,height);
+	
+	
+	cttext.moveTo(vx,vy);
+	cttext.lineTo(vx,vy+200);
+	cttext.strokeStyle = 'black';
+	cttext.stroke();
+
+	cttext.moveTo(hx,hy);
+	cttext.lineTo(hx+200,hy);
+	cttext.strokeStyle = 'black';
+	cttext.stroke();
+
+	cttext.beginPath();
+	cttext.arc(x,y,50,0,2*Math.PI);
+	cttext.strokeStyle = 'red';
+	cttext.stroke();
+	
+	cttext.beginPath();
+	cttext.arc(x,y,10,0,2*Math.PI);
+	cttext.fillStyle = 'white';
+	cttext.fill();
+	cttext.strokeStyle = 'white';
+	cttext.stroke();
+	
+	setInterval(tick,100);
+}
+
+function handleMouseMove(event)
+{
+	if(!isClicked)
+	{	
+	x=event.clientX;
+	y=event.clientY;
+	
+	vx=event.clientX;
+	vy=event.clientY-100;
+	
+	hx=event.clientX-100;
+	hy=event.clientY;
+	
+	}
+}
+
+function handleMouseDown(event)
+{
+	isClicked=true;
+}
+
+function handleMouseUp(event)
+{
+	isClicked=false;
+}
+
+
+
+</script>
+</body>
+
+
+
+</html>

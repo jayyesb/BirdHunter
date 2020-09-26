@@ -1,0 +1,227 @@
+<html>
+
+<head>
+
+</head>
+
+<body style="cursor:none;margin:0px auto;">
+
+<canvas id= "CanvasTest" width="1000" height="600" style="border:1px solid #000000;margin:0px 180px;">
+
+Game Goes Here . . .
+
+</canvas>
+
+
+<script>
+
+
+var can = document.getElementById("CanvasTest");
+var ctx= can.getContext("2d");
+	  
+var vx=300,vy=100,hx=200,hy=200;
+var x=300,y=200;
+
+
+var width=can.width;
+var height=can.height;
+
+
+
+var bGround1=new Image();
+bGround1.src="bg1.png";
+bGround1.onload=function()
+{
+	//ctx.drawImage(bGround1,0,0,width,height);
+	console.log("BackGround 1 Loaded");
+}
+
+var bGround2=new Image();
+bGround2.src="bg2.png";
+bGround2.onload=function()
+{
+	//ctx.drawImage(bGround2,0,0,width,height);
+	console.log("BackGround 2 Loaded");
+}
+
+
+duckImage=new Image();
+duckImage.src="bird.png";
+duckImage.onload=function()
+{
+	//ctx.drawImage(duckImage,0,0,100,100);
+	console.log("Bird Loaded");
+}
+
+var ducks=[];
+
+
+var timeDiff=2000;
+var currentTime;
+var lastSpawn=Date.now();
+
+
+var isClicked=false;
+var clickX=0,clickY=0;
+
+var score=0;
+
+
+tick();
+
+document.addEventListener("mousedown",handleMouseDown);
+document.addEventListener("mouseup",handleMouseUp);
+document.addEventListener("mousemove",handleMouseMove);
+
+window.requestAnimationFrame(tick);
+
+function tick()
+{
+
+	window.requestAnimationFrame(tick);
+
+	ctx.clearRect(0,0,width,height);
+	
+	ctx.drawImage(bGround1,0,0,width,height);
+	ctx.drawImage(bGround2,0,0,width,height);
+	
+	currentTime=Date.now();
+	
+	if(currentTime >(lastSpawn+timeDiff))
+	{
+		lastSpawn=currentTime;
+		spawnDucks();
+		timeDiff-=1;
+	}
+	
+	collisionCheck();
+	
+	for(i=0;i<ducks.length;i++)
+	{
+		ducks[i].render();
+		
+	}
+	
+	drawPointer();
+	
+	drawText();
+	
+}
+
+function drawPointer()
+	{
+	ctx.moveTo(vx,vy);
+	ctx.lineTo(vx,vy+200);
+	ctx.strokeStyle = 'black';
+	ctx.stroke();
+
+	ctx.moveTo(hx,hy);
+	ctx.lineTo(hx+200,hy);
+	ctx.strokeStyle = 'black';
+	ctx.stroke();
+
+	ctx.beginPath();
+	ctx.arc(x,y,50,0,2*Math.PI);
+	ctx.strokeStyle = 'red';
+	ctx.stroke();
+	
+	ctx.beginPath();
+	ctx.arc(x,y,10,0,2*Math.PI);
+	//ctx.fillStyle = 'white';
+	//ctx.fill();
+	ctx.strokeStyle = 'black';
+	ctx.stroke();
+	}
+	
+
+function Duck()
+{
+	this.x=0;
+	this.y=0;
+	this.width=100;
+	this.height=100;
+	this.drawable=true;
+	
+	this.render=function()
+	{
+		ctx.drawImage(duckImage,this.x,this.y,this.width,this.height);	
+	}
+}
+
+	
+function spawnDucks()
+{
+	var duck=new Duck();
+	duck.x=(Math.random()*(can.width-100));
+	duck.y=(Math.random()*(can.height-100));
+	
+	ducks.push(duck);
+	
+}
+
+function handleMouseMove(event)
+{
+	if(!isClicked)
+	{	
+	x=event.clientX;
+	y=event.clientY;
+	
+	vx=event.clientX;
+	vy=event.clientY-100;
+	
+	hx=event.clientX-100;
+	hy=event.clientY;
+	
+	}
+}
+
+function handleMouseDown(event)
+{
+	isClicked=true;
+	
+	clickX=event.clientX;
+	clickY=event.clientY;
+	
+	console.log("Clicked");
+}
+
+function handleMouseUp(event)
+{
+	isClicked=false;
+}
+
+
+function collisionCheck()
+{
+	for(i=0;i<ducks.length;i++)
+	{
+		
+		if((clickX>ducks[i].x && clickX<ducks[i].x+ducks[i].width )&&
+			(clickY>ducks[i].y && clickY<ducks[i].y+ducks[i].height))
+			{
+				//ducks[i].drawable=false;
+				console.log("Shot");
+				//ducks[i]="undefined";
+				score++;
+				ducks.splice(i,1)
+				break;
+			}
+		
+	}
+}
+
+function drawText()
+{
+	ctx.font="30px Georgia";
+	ctx.fillText("Bird Hunter",450,50);
+	ctx.font="20px Arial";
+	ctx.fillText("Score is : "+score,880,100);
+}
+
+
+</script>
+
+
+</body>
+
+</html>
